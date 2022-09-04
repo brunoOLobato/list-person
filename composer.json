@@ -1,0 +1,15 @@
+{
+  "name": "person/person-us",
+  "description": "Plugin for person",
+  "type": "project",
+  "license": "GPL",
+  "authors": [{
+    "name": "Bruno Lobato",
+    "email": "bolobato@gmail.com"
+  }],
+  "minimum-stability": "dev",
+  "require": {},
+  "autoload": {
+    "psr-4": { "Inc\\": "./inc" }
+  }
+}

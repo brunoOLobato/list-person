@@ -1,0 +1,6 @@
+/**
+ * Front
+ */
+export default function() {
+
+}
