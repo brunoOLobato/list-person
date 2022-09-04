@@ -23,34 +23,13 @@ class PersonCTP extends BaseControllerPerson
     {
         add_action('init', array($this, 'custom_post')); // register a new costom post type
         add_action('admin_init', array($this, 'add_person_delete_cap')); // register capabilities do users
-        add_filter('enter_title_here', array($this, 'change_title_text'));
-
-        add_action('add_meta_boxes', array($this, 'meta_boxes'));
-        add_action('save_post', array($this, 'save_post_data'));
-        add_filter('single_template', array($this, 'custom_template_person'));
-        add_filter('archive_template', array($this, 'taxonomy_template'));
-
-        add_action('wp_ajax_getSubcat', array($this, 'getSubcat'));
-        add_action('wp_ajax_nopriv_getSubcat', array($this, 'getSubcat'));
-
-        add_action('wp_ajax_getPostsfilter', array($this, 'getPostsfilter'));
-        add_action('wp_ajax_nopriv_getPostsfilter', array($this, 'getPostsfilter'));
-
-
-        // add_shortcode('caseInfos', array($this, 'caseInfos'));
-        add_shortcode('personList', array($this, 'personList'));
-
-        //add_action('after_setup_theme', array($this, 'menu_case_list_register'));
+        add_filter('enter_title_here', array($this, 'change_title_text')); // change title custom post type
+        add_action('add_meta_boxes', array($this, 'meta_boxes')); // create metaboxes to custom post type
+        add_action('save_post', array($this, 'save_post_data')); // save function custom fields
+        add_filter('single_template', array($this, 'custom_template_person')); // define simple template
+        add_filter('archive_template', array($this, 'taxonomy_template')); // define taxonomy template
+        add_shortcode('personList', array($this, 'personList')); // register shortcode
     }
-
-    /*public function menu_case_list_register()
-    {
-        register_nav_menus(
-            array(
-                'menuCaseList' => __('Menu Case List'),
-            )
-        );
-    }*/
 
     function change_title_text($title)
     {
@@ -62,9 +41,6 @@ class PersonCTP extends BaseControllerPerson
 
         return $title;
     }
-
-
-
 
     /**
      * Register all custom post types used by plugins 
@@ -106,7 +82,6 @@ class PersonCTP extends BaseControllerPerson
                 "hierarchical" => false,
                 "query_var" => true,
                 "can_export" => false,
-                // 'rewrite'     => ["slug" => "person", "with_front" => true],
                 "menu_icon"     => "dashicons-admin-users",
                 "supports"      => [
                     "title",
@@ -117,7 +92,6 @@ class PersonCTP extends BaseControllerPerson
 
         flush_rewrite_rules(false);
     }
-
 
     /**
      * Add capabilities do users 
@@ -142,7 +116,6 @@ class PersonCTP extends BaseControllerPerson
         }
     }
 
-
     /**
      * Create a metaboxes to post types 
      */
@@ -150,7 +123,7 @@ class PersonCTP extends BaseControllerPerson
     {
         add_meta_box(
             'general',
-            'User information',
+            'Person information',
             array($this, 'general_metabox'),
             'person'
         );
@@ -171,17 +144,15 @@ class PersonCTP extends BaseControllerPerson
         $personicon                = get_post_meta($post->ID, 'personicon', true) ? get_post_meta($post->ID, 'personicon', true) : $pixelencounter;
 
         echo "<div id='wrap'>";
-
-        echo '<pre>';
-        //var_dump($restcountriesj);
-        echo '</pre>';
-
         /**
          * Field
          */
         echo "<label class='label-metabox' for='personmail'>E-mail</label>";
         echo '<input id="personmail" name="personmail" class="metabox-input" placeholder="E-mail" value="' . $personmail . '" type="text" />';
 
+        /**
+         * Field
+         */
         echo "<label class='label-metabox' for='personphonecode'>Phone code</label>";
         echo '<select id="personphonecode" name="personphonecode" class="metabox-input">';
         foreach ($restcountriesj as $item) {
@@ -238,14 +209,12 @@ class PersonCTP extends BaseControllerPerson
         }
     }
 
-    //    /**
-    //      * Template for CTP's
-    //      */
+    /**
+     * Template for CTP's
+     */
     function custom_template_person($single)
     {
         global $post;
-        //var_dump($post);
-        $user = wp_get_current_user();
         if ($post->post_type == "person") {
             return $this->plugin_path . '/single-person.php';
         }
@@ -254,18 +223,14 @@ class PersonCTP extends BaseControllerPerson
 
     function taxonomy_template($template)
     {
-
         if (is_post_type_archive('person')) {
             $template = $this->plugin_path . '/taxonomy-person.php';
         }
-
         return $template;
     }
 
     function personList()
     {
-
-
         ob_start();
 
         echo '<div class="person-list-box"><div class="box"><h1>' .  __('person <b>list</b>') . '</h1>';
